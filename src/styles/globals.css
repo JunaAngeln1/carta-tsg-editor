@@ -187,3 +187,140 @@
 html {
   font-size: var(--font-size);
 }
+
+
+@font-face {
+  font-family: 'Exo2';
+  src: url('../public/assets/fonts/futura/Exo/Exo2-Bold.ttf') format('woff2'),
+       url('../public/assets/fonts/futura/Exo/Exo2-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+
+/* === EXO 2 - SEMIBOLD 15PT (Prefijo) === */
+@font-face {
+  font-family: 'Exo2';
+  src: url('../public/assets/fonts/futura/Exo/Exo2-SemiBoldItalic.ttf') format('woff2'),
+       url('../public/assets/fonts/futura/Exo/Exo2-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+}
+
+/* === EXO 2 - ITALIC 12PT (Pasiva descripción + Descripción de imagen) === */
+@font-face {
+  font-family: 'Exo2';
+  src: url('../public/assets/fonts/futura/Exo/Exo2-Italic.ttf') format('woff2'),
+       url('../public/assets/fonts/futura/Exo/Exo2-Italic.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+}
+
+/* === EXO 2 - REGULAR 13PT (Ataque descripción) === */
+@font-face {
+  font-family: 'Exo2';
+  src: url('../public/assets/fonts/futura/Exo/Exo2-Regular.ttf') format('woff2'),
+       url('../public/assets/fonts/futura/Exo/Exo2-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+/* === FUTURA - HEAVY 20PT (Número ataque) === */
+@font-face {
+  font-family: 'Futura';
+  src: url('../public/assets/fonts/futura/FuturaCyrillicHeavy.ttf') format('woff2'),
+       url('../public/assets/fonts/futura/FuturaCyrillicHeavy.ttf') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+}
+
+/* === FUTURA - DEMI 12PT (Texto PS) === */
+@font-face {
+  font-family: 'Futura';
+  src: url('../public/assets/fonts/futura/FuturaCyrillicDemi.ttf') format('woff2'),
+       url('../public/assets/fonts/futura/FuturaCyrillicDemi.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+}
+
+.font-card-name {
+  font-family: 'Exo2', sans-serif;
+  font-weight: 700;
+  font-size: 100px;
+}
+
+/* Prefijo */
+.font-card-prefix {
+  font-family: 'Exo2', sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+}
+
+/* Pasiva descripción */
+.font-card-passive {
+  font-family: 'Exo2', sans-serif;
+  font-weight: 400;
+  font-style: italic;
+  font-size: 12px;
+}
+
+/* Ataque texto */
+.font-attack-name {
+  font-family: 'Exo2', sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+}
+
+/* Ataque descripción */
+.font-attack-description {
+  font-family: 'Exo2', sans-serif;
+  font-weight: 400;
+  font-size: 13px;
+}
+
+/* Número ataque */
+.font-attack-damage {
+  font-family: 'Futura', sans-serif;
+  font-weight: 900;
+  font-size: 20px;
+}
+
+/* Texto debilidad y retirada */
+.font-footer-text {
+  font-family: 'Exo2', sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+}
+
+/* Texto PS */
+.font-ps-label {
+  font-family: 'Futura', sans-serif;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+/* Número PS */
+.font-ps-number {
+  font-family: 'Futura', sans-serif;
+  font-weight: 600;
+  font-size: 30px;
+}
+
+/* Descripción de la imagen */
+.font-image-description {
+  font-family: 'Exo2', sans-serif;
+  font-weight: 400;
+  font-style: italic;
+  font-size: 12px;
+}
+
+/* Autor */
+.font-author {
+  font-family: 'Exo2', sans-serif;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+/* Fuente por defecto del body */
+body {
+  font-family: 'Exo2', sans-serif;
+}

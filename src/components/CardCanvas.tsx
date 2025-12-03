@@ -63,7 +63,7 @@ export function CardCanvas() {
             className="absolute inset-0 w-full h-full object-cover"
             style={{
               zIndex: 1,
-              left: "0.3px",
+              left: "-0.3px",
             }}
           />
 
@@ -92,24 +92,32 @@ export function CardCanvas() {
         >
           {/* HEADER: Prefijo + Nombre + PS */}
           <div className="absolute top-3 left-3 right-3 flex justify-between items-start">
-            <div className="flex items-baseline gap-2">
+            <div className="flex items-baseline gap-1">
               {cardData.prefix && (
-                <span className="font-card-prefix text-xs italic">
+                <span
+                  className="font-card-prefix text-xs italic"
+                  style={{ position: "relative", top: "-15px", right: "-10px" }}
+                >
                   {cardData.prefix}
                 </span>
               )}
               <span
                 className="text-gray-900 font-card-name"
-                style={{ fontSize: "20px" }}
+                style={{ position: "relative", top: "-10px", right: "-10px" }}
               >
                 {cardData.name || "Nombre"}
               </span>
             </div>
             <div className="flex items-baseline gap-1">
-              <span className="font-ps-label">PS</span>
+              <span
+                className="font-ps-label"
+                style={{ position: "relative", top: "-15px" }}
+              >
+                PS
+              </span>
               <span
                 className="font-ps-number"
-                style={{  }}
+                style={{ position: "relative", top: "-13px" }}
               >
                 {cardData.hp || "000"}
               </span>
@@ -126,25 +134,46 @@ export function CardCanvas() {
               left: "50%",
               transform: "translateX(-50%)",
               borderRadius: "8px",
+              position: "relative", // ✅ CAMBIO: Asegurar contexto de posicionamiento
             }}
           >
-            {/* Aquí va solo la imagen de ilustración */}
-            {cardData.characterImage.src && (
-              <img
-                src={cardData.characterImage.src}
-                alt="Character"
-                style={{
-                  transform:
-                    `translate(${cardData.characterImage.x}px, ${cardData.characterImage.y}px) scale(${cardData.characterImage.scale}) ${
-                      cardData.characterImage.flipX ? "scaleX(-1)" : ""
-                    }`,
-                  opacity: cardData.characterImage.opacity,
-                }}
-                className="w-full h-full object-cover"
-              />
-            )}
+            {/* ✅ CAMBIO: Contenedor interno expandido (200% del área visible) */}
+            <div
+              style={{
+                position: "absolute",
+                width: "200%",
+                height: "200%",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                pointerEvents: "none", // Evita interferencias con eventos del mouse
+              }}
+            >
+              {/* Aquí va solo la imagen de ilustración */}
+              {cardData.characterImage.src && (
+                <img
+                  src={cardData.characterImage.src}
+                  alt="Character"
+                  style={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "contain", // ✅ CAMBIO: contain para mantener proporciones
+                    transform: `
+            translate(-50%, -50%)
+            translate(${cardData.characterImage.x}px, ${cardData.characterImage.y}px)
+            scale(${cardData.characterImage.scale})
+            ${cardData.characterImage.flipX ? "scaleX(-1)" : ""}
+          `,
+                    opacity: cardData.characterImage.opacity,
+                    pointerEvents: "auto", // Permite interacción con la imagen
+                  }}
+                />
+              )}
+            </div>
           </div>
-
           {/* ICONOS DE CLASE (esquina superior derecha) - FUERA del área de ilustración */}
           {selectedClasses.length > 0 && (
             <div
@@ -192,7 +221,7 @@ export function CardCanvas() {
           <div
             className="absolute left-3 right-3 text-center"
             style={{
-              top: `${40 + CARD_DIMENSIONS.ILLUSTRATION_AREA.height - 17}px`,
+              top: `${40 + CARD_DIMENSIONS.ILLUSTRATION_AREA.height - 18}px`,
               zIndex: 25,
             }}
           >
@@ -221,65 +250,64 @@ export function CardCanvas() {
               top: `${40 + CARD_DIMENSIONS.ILLUSTRATION_AREA.height + 40}px`,
             }}
           >
-            {[0, 1].map((index) => {
-              const attack = cardData.attacks[index];
-              return (
-                <div
-                  key={index}
-                  className="pb-2"
-                >
-                  {/* Fila superior: Energías + Nombre + Daño */}
-                  <div className="grid grid-cols-[80px_1fr_60px] gap-2 items-center mb-1 text-white">
-                    {/* Energías */}
-                    <div className="flex gap-0.5 flex-wrap items-center">
-                      {attack?.energyCost.slice(0, 4).map((energyId, i) => {
-                        const energy = ENERGY_TYPES.find((e) =>
-                          e.id === energyId
-                        );
-                        return (
-                          <div
-                            key={i}
-                            className="w-4 h-4 flex items-center justify-center"
-                            title={energy?.label}
-                          >
-                            <img
-                              src={energy?.icon}
-                              alt={energy?.label}
-                              className="w-full h-full object-contain"
-                            />
-                          </div>
-                        );
-                      })}
-                      {(!attack || attack.energyCost.length === 0) && (
-                        <span className="text-gray-500 text-xs">energías</span>
-                      )}
-                    </div>
-
-                    {/* Nombre del ataque */}
-                    <div className="text-center">
-                      <p className="text-gray-900 font-attack-name ">
-                        {attack?.name || `atk ${index + 1}`}
-                      </p>
-                    </div>
-                    {/* Poder del ataque */}
-                    <div className="text-right">
-                      <span className="text-gray-900 font-attack-damage">
-                        {attack?.damage || "atk "}
-                      </span>
-                    </div>
+            {cardData.attacks.map((attack, index) => (
+              <div
+                key={attack.id}
+                className="pb-2"
+              >
+                {/* Fila superior: Energías + Nombre + Daño */}
+                <div className="grid grid-cols-[80px_1fr_60px] gap-2 items-center mb-1 text-white">
+                  {/* Energías */}
+                  <div className="flex gap-0.5 flex-wrap items-center">
+                    {attack?.energyCost.slice(0, 4).map((energyId, i) => {
+                      const energy = ENERGY_TYPES.find((e) =>
+                        e.id === energyId
+                      );
+                      return (
+                        <div
+                          key={i}
+                          className="w-4 h-4 flex items-center justify-center"
+                          title={energy?.label}
+                        >
+                          <img
+                            src={energy?.icon}
+                            alt={energy?.label}
+                            className="w-full h-full object-contain"
+                          />
+                        </div>
+                      );
+                    })}
+                    {(!attack || attack.energyCost.length === 0) && (
+                      <span className="text-gray-500 text-xs">energías</span>
+                    )}
                   </div>
 
-                  {/* Descripción del ataque */}
-                  {attack?.description && (
-                    <div className="text-left px-1">
-                      <p className="text-gray-700 text-[10px] font-attack-description">
-                        {attack.description}
-                      </p>
-                    </div>
-                  )}
+                  {/* Nombre del ataque */}
+                  <div className="text-center">
+                    <p className="text-gray-900 font-attack-name ">
+                      {attack?.name || `atk ${index + 1}`}
+                    </p>
+                  </div>
+
+                  {/* Poder del ataque */}
+                  <div className="text-right">
+                    <span className="text-gray-900 font-attack-damage">
+                      {attack?.damage || "atk"}
+                    </span>
+                  </div>
                 </div>
-              );
-            })}
+
+                {/* Descripción del ataque */}
+                {attack?.description && (
+                  <div className="text-left px-1">
+                    {/* CAMBIO: Renderizar con saltos de línea preservados */}
+                    <p className="text-gray-700 text-[10px] font-attack-description whitespace-pre-line">
+                      {attack.description}
+                    </p>
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
           {/* FOOTER: Debilidad, Iconos de energía y Retirada */}
           <div
@@ -299,9 +327,7 @@ export function CardCanvas() {
                 left: "20px",
               }}
             >
-              <span
-                className="font-footer-text  "
-              >
+              <span className="font-footer-text  ">
                 Debilidad
               </span>
               <div className="flex items-center gap-1">
@@ -340,11 +366,11 @@ export function CardCanvas() {
             {/* Retirada */}
             <div
               className="flex flex-row items-center gap-2"
-              style={{ position: "relative", top: "20px" , right: "5px"}}
+              style={{ position: "relative", top: "20px", right: "5px" }}
             >
               <span
                 className="font-footer-text"
-                style={{  }}
+                style={{}}
               >
                 Retirada
               </span>

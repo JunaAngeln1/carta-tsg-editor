@@ -98,8 +98,12 @@ export function TextEditor() {
         <input
           type="text"
           value={cardData.name}
-          onChange={(e) => updateCardData({ name: e.target.value })}
+          onChange={(e) => {
+            const value = e.target.value.slice(0, 12);
+            updateCardData({ name: value });
+          }}
           placeholder="Ej: Héroe Legendario"
+          maxLength={12}
           className="w-full bg-[#2a2d48] text-white px-4 py-2.5 rounded-lg border border-gray-600 focus:border-purple-500 focus:outline-none"
         />
       </div>
@@ -191,36 +195,36 @@ export function TextEditor() {
           </div>
         )}
       </div>
-      
+
       {/* SELECTOR DE RAREZA */}
-<div>
-  <label className="block text-white mb-2">
-    Tipo de Rareza
-    <span className="block text-xs text-gray-400 mt-1">
-      Iconos en /assets/rarity-icons/
-    </span>
-  </label>
-  <div className="grid grid-cols-2 gap-2">
-    {RARITY_TYPES.map((rarity) => (
-      <button
-        key={rarity.id}
-        onClick={() => updateCardData({ rarity: rarity.id })}
-        className={`px-3 py-2 rounded-lg border-2 transition-all text-sm flex items-center gap-2 ${
-          cardData.rarity === rarity.id
-            ? 'border-yellow-500 bg-yellow-500/20 text-white'
-            : 'border-gray-600 bg-gray-700/30 text-gray-400 hover:border-gray-500'
-        }`}
-      >
-        <img 
-          src={rarity.icon} 
-          alt={rarity.label}
-          className="w-6 h-6 object-contain"
-        />
-        <span className="text-xs">{rarity.label}</span>
-      </button>
-    ))}
-  </div>
-</div>
+      <div>
+        <label className="block text-white mb-2">
+          Tipo de Rareza
+          <span className="block text-xs text-gray-400 mt-1">
+            Iconos en /assets/rarity-icons/
+          </span>
+        </label>
+        <div className="grid grid-cols-2 gap-2">
+          {RARITY_TYPES.map((rarity) => (
+            <button
+              key={rarity.id}
+              onClick={() => updateCardData({ rarity: rarity.id })}
+              className={`px-3 py-2 rounded-lg border-2 transition-all text-sm flex items-center gap-2 ${
+                cardData.rarity === rarity.id
+                  ? "border-yellow-500 bg-yellow-500/20 text-white"
+                  : "border-gray-600 bg-gray-700/30 text-gray-400 hover:border-gray-500"
+              }`}
+            >
+              <img
+                src={rarity.icon}
+                alt={rarity.label}
+                className="w-6 h-6 object-contain"
+              />
+              <span className="text-xs">{rarity.label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
 
       {/* DESCRIPCIÓN DE IMAGEN */}
       <div>
@@ -252,18 +256,16 @@ export function TextEditor() {
       <div>
         <div className="flex items-center justify-between mb-3">
           <label className="text-white">Ataques (máximo 2)</label>
-          <button
-            onClick={addAttack}
-            disabled={cardData.attacks.length >= 2}
-            className={`flex items-center gap-2 px-3 py-1.5 rounded text-sm ${
-              cardData.attacks.length >= 2
-                ? "bg-gray-700 text-gray-500 cursor-not-allowed"
-                : "bg-purple-500 hover:bg-purple-600 text-white"
-            }`}
-          >
-            <Plus size={16} />
-            Agregar
-          </button>
+          {/* ✅ CAMBIO: Mostrar/ocultar segundo ataque según botón */}
+          {cardData.attacks.length < 2 && (
+            <button
+              onClick={addAttack}
+              className="flex items-center gap-2 px-3 py-1.5 rounded text-sm bg-purple-500 hover:bg-purple-600 text-white"
+            >
+              <Plus size={16} />
+              Agregar
+            </button>
+          )}
         </div>
 
         <div className="space-y-4">
@@ -349,19 +351,29 @@ export function TextEditor() {
                 </div>
               </div>
 
-              <div>
-                <label className="block text-gray-400 text-sm mb-2">
-                  Descripción
-                </label>
-                <textarea
-                  value={attack.description}
-                  onChange={(e) =>
-                    updateAttack(attack.id, { description: e.target.value })}
-                  placeholder="Descripción del ataque..."
-                  rows={2}
-                  className="w-full bg-[#1e2238] text-white px-3 py-2 rounded border border-gray-700 focus:border-purple-500 focus:outline-none resize-none text-sm"
-                />
-              </div>
+              <textarea
+                value={attack.description}
+                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
+                  const value = e.target.value;
+
+                  // Máximo 3 saltos de línea manuales
+                  const lineCount = value.split("\n").length;
+                  if (lineCount > 3) return;
+
+                  updateAttack(attack.id, { description: value });
+                }}
+                rows={3}
+                maxLength={110} // ⭐ Límite total de caracteres que tú quieras
+                className="w-full bg-[#1e2238] text-white px-3 py-2 rounded border border-gray-700 
+             focus:border-purple-500 focus:outline-none resize-none text-sm overflow-hidden"
+                style={{
+                  whiteSpace: "pre-wrap",
+                  overflowWrap: "break-word",
+                  wordBreak: "break-all",
+                  lineHeight: "1.2",
+                  maxHeight: `${1.2 * 3}em`,
+                }}
+              />
 
               <div>
                 <label className="block text-gray-400 text-sm mb-2">
@@ -370,11 +382,23 @@ export function TextEditor() {
                 <input
                   type="text"
                   value={attack.damage}
-                  onChange={(e) =>
-                    updateAttack(attack.id, { damage: e.target.value })}
-                  placeholder="ej: 120, 80+, etc."
+                  onChange={(e) => {
+                    // ✅ CAMBIO: Restricción de poder del ataque (solo números, máx. 3 dígitos)
+                    const value = e.target.value;
+
+                    // Solo permitir números y máximo 3 dígitos
+                    if (/^\d{0,3}$/.test(value)) {
+                      updateAttack(attack.id, { damage: value });
+                    }
+                  }}
+                  placeholder="ej: 120, 80, etc."
+                  maxLength={3} // ✅ CAMBIO: Atributo HTML adicional
                   className="w-full bg-[#1e2238] text-white px-3 py-2 rounded border border-gray-700 focus:border-purple-500 focus:outline-none"
                 />
+                {/* ✅ CAMBIO: Indicador visual */}
+                <span className="text-xs text-gray-500 mt-1 block">
+                  Solo números (0-999)
+                </span>
               </div>
             </div>
           ))}

@@ -1631,14 +1631,14 @@ html {
 .font-card-name {
   font-family: 'Exo2', sans-serif;
   font-weight: 700;
-  font-size: 30px;
+  font-size: 25px;
 }
 
 /* Prefijo */
 .font-card-prefix {
   font-family: 'Exo2', sans-serif;
   font-weight: 600;
-  font-size: 22px;
+  font-size: 15px;
 }
 
 /* Pasiva descripción */
@@ -1646,7 +1646,7 @@ html {
   font-family: 'Exo2', sans-serif;
   font-weight: 400;
   font-style: italic;
-  font-size: 13px;
+  font-size: 12px;
 }
 
 /* Ataque texto */
@@ -1689,7 +1689,7 @@ html {
 .font-ps-number {
   font-family: 'Futura', sans-serif;
   font-weight: 600;
-  font-size: 20px;
+  font-size: 30px;
 }
 
 /* Descripción de la imagen */
